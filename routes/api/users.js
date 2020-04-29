@@ -12,14 +12,9 @@ const User = require("../../models/User");
 router.post(
   '/',
   [
-    check('name', 'Name is required')
-      .not()
-      .isEmpty(),
+    check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({ min: 6 })
+    check('password','Please enter a password with 6 or more characters').isLength({ min: 6 })
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -34,7 +29,7 @@ router.post(
         let user = await User.findOne({ email });
 
         if(user){
-          res.status(400).json({ errors: [{ msg: "User already exists"}] });
+          return res.status(400).json({ errors: [{ msg: "User already exists"}] });
         }
 
         //get users gravatar
@@ -62,6 +57,7 @@ router.post(
         //Get Json webtoken
 
       res.send('User registered');
+      
     } catch(err) {
       console.error(error.message);
       res.status(500).send('Server error');
